@@ -10,14 +10,14 @@ export const Cart = async () => {
 
 const getFacilityFromIndex = async () => {
     const facilityId = getFacility()
-    const response = await fetch(`http://localhost:8088/facilities/${facilityId}`)
+    const response = await fetch(`http://localhost:5248/api/facilities/${facilityId}`)
     const facility = await response.json()
     return facility.name
 }
 
 const getFacilityMineralFromIndex = async () => {
     const mineralId = getFacilityMineral()
-    const response = await fetch(`http://localhost:8088/facilityMinerals/${mineralId}?_expand=mineral`)
+    const response = await fetch(`http://localhost:5248/api/facilityMinerals/${mineralId}?_expand=mineral`)
     const mineral = await response.json()
     return mineral.mineral.name
 }

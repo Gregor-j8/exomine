@@ -46,10 +46,10 @@ export const purchaseMineral = async () => {
         window.alert("Purchase failed: select all options before purchasing"); return;
     }
 
-    const colonyResponse = await fetch('http://localhost:8088/colonyMinerals')
+    const colonyResponse = await fetch('http://localhost:5248/api/colonyMinerals')
     const colonyMinerals = await colonyResponse.json()
     
-    const facilityResponse = await fetch(`http://localhost:8088/facilityMinerals/${facilityMineralId}`)
+    const facilityResponse = await fetch(`http://localhost:5248/api/facilityMinerals/${facilityMineralId}`)
     const facilityJoinTable = await facilityResponse.json()
 
     let createPost = true
@@ -116,7 +116,7 @@ const coloniesPost = async (objectToPost) => {
         },
         body: JSON.stringify(objectToPost)
     }
-    await fetch('http://localhost:8088/colonyMinerals', postOptions)
+    await fetch('http://localhost:5248/api/colonyMinerals', postOptions)
 }
 
 const put = async (objectToPut, joinTableId) => {
@@ -127,5 +127,5 @@ const put = async (objectToPut, joinTableId) => {
         },
         body: JSON.stringify(objectToPut)
     }
-    await fetch(`http://localhost:8088${joinTableId}`, postOptions)
+    await fetch(`http://localhost:5248/api/${joinTableId}`, postOptions)
 }

@@ -13,10 +13,10 @@ export const colonyMinerals = async () => {
 const updateColonyInventory = async (selectedGovernorId) => {
   const fetchData = async () => {
     const urls = [
-      "http://localhost:8088/governors",
-      "http://localhost:8088/colonies",
-      "http://localhost:8088/colonyMinerals",
-      "http://localhost:8088/minerals",
+      "http://localhost:5248/api/governors",
+      "http://localhost:5248/api/colonies",
+      "http://localhost:5248/api/colonyMinerals",
+      "http://localhost:5248/api/minerals",
     ];
     const [governors, colonies, colonyMineralData, minerals] =
       await Promise.all(
