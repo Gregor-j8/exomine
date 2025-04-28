@@ -5,7 +5,7 @@ export const getFacilityMinerals = () => {
 }
 
 const generateOptions = async (id) => {
-    const response = await fetch('http://localhost:5248/facilityMinerals?_expand=mineral&_expand=facility')
+    const response = await fetch('http://localhost:5248/fm')
 
     const facilityMinerals = await response.json()
 
