@@ -1,7 +1,7 @@
 import { resetTransientState } from "./TransientState.js"
 
 export const getFacilities = async () => {
-    const response = await fetch('http://localhost:8088/facilities')
+    const response = await fetch('http://localhost:5248/api/facilities')
 
     const facilities = await response.json()
     
