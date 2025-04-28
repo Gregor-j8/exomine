@@ -17,7 +17,7 @@ const getFacilityFromIndex = async () => {
 
 const getFacilityMineralFromIndex = async () => {
     const mineralId = getFacilityMineral()
-    const response = await fetch(`http://localhost:5248/api/facilityMinerals/${mineralId}?_expand=mineral`)
+    const response = await fetch(`http://localhost:5248/api/facilityminerals/minerals/${mineralId}`)
     const mineral = await response.json()
     return mineral.mineral.name
 }
