@@ -52,6 +52,22 @@ export const purchaseMineral = async () => {
     const facilityResponse = await fetch(`http://localhost:5248/api/facilityMinerals/${facilityMineralId}`)
     const facilityJoinTable = await facilityResponse.json()
 
+    const colonyDetailsResponse = await fetch(`http://localhost:5248/api/colonies/${colonyId}`)
+    const colony = await colonyDetailsResponse.json()
+
+    const facilityDetailsResponse = await fetch(`http://localhost:5248/api/miningFacilities/${facilityId}`)
+    const facility = await facilityDetailsResponse.json()
+
+    const mineralResponse = await fetch(`http://localhost:5248/api/minerals/${mineralId}`)
+    const mineral = await mineralResponse.json()
+
+    const mineralPrice = mineral.Price
+
+    if (colony.balance < mineralPrice) {
+        window.alert("Insufficient funds!")
+        return
+    }
+
     let createPost = true
 
     for (const joinTable of colonyMinerals) {
@@ -98,6 +114,21 @@ export const purchaseMineral = async () => {
         await put(facilityUpdate, `/facilityMinerals/${facilityJoinTable.id}`)
 
     }
+
+    const updatedCoBalance = {
+        id: colony.id,
+        name: colony.name,
+        balance: colony.balance - mineralPrice
+    }
+    await put(updatedCoBalance, `/colonies/${colony.id}`)
+
+    const updatedFacBalance = {
+        id: facility.id,
+        name: facility.name,
+        isActive: facility.isActive,
+        balance: facility.balance + mineralPrice
+    }
+    await put(updatedFacBalance, `/miningFacilities/${facility.id}`)
 
     const resetMineralId = () => {
         state.facilityMineralId = 0;
