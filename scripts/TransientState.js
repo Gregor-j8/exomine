@@ -147,7 +147,7 @@ const coloniesPost = async (objectToPost) => {
         },
         body: JSON.stringify(objectToPost)
     }
-    await fetch('http://localhost:5248/api/colonyMinerals', postOptions)
+    // await fetch('http://localhost:5248/api/colonyMinerals', postOptions)
 }
 
 const put = async (objectToPut, joinTableId) => {
