@@ -18,32 +18,38 @@ export const GetAllFacilityMineralsById = async(id) => {
 }
 
 export const PostColonyMineral = async(cm) => {
-    return fetch("http://localhost:5248/api/colonyMinerals", {
+    await fetch("http://localhost:5248/api/colonyMinerals", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(cm)
     }).then(res => res.json())
+
+    return
 }
 export const PutColonyMineral = async(cm) => {
-    return fetch(`http://localhost:5248/api/colonyMinerals/${cm.id}`, {
+    const res = await fetch(`http://localhost:5248/api/colonyMinerals/${cm.id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(cm)
-    }).then(res => res.json())
+    })
+
+    return
 }
 export const PutfacilityMineral = async(fm) => {
-    return fetch(`http://localhost:5248/api/facilityMinerals/${fm.id}
+    await fetch(`http://localhost:5248/api/facilityMinerals/${fm.id}
 `, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(fm)
-    }).then(res => res.json())
+    })
+
+    return
 }
 
 // http://localhost:5248/api/colonyMinerals
