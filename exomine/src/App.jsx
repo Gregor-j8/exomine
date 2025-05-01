@@ -14,6 +14,7 @@ export const App = () => {
   const [FacilityMinerals, setFacilityMinerals] = useState([])
   const [quantity, setQuantity] = useState(0)
   const [mineralquantity, setmineralquantity] = useState(0)
+  const [pirateChance, setPirateChance] = useState(0)
 
   useEffect(() => {
     GetGovernors().then(data => {
@@ -59,43 +60,52 @@ export const App = () => {
     }
   }, [mineralItem]);
   
-      const handlePurchase = () => {
-        if (quantity > 0) {
-          const updatedMineral = {
-            colonyId: Colony.id,
-            mineralId: mineralItem.mineralId,
-            miningFacilityId: mineralItem.miningFacilityId,
-            quantity: quantity
-          }
-      
-          const foundMineral = ColonyMinerals.find(cm => cm.mineralId === updatedMineral.mineralId && cm.colonyId === updatedMineral.colonyId)
-          const foundFacilityMineral = FacilityMinerals.find(fm => fm.mineralId === updatedMineral.mineralId && fm.miningFacilityId === updatedMineral.miningFacilityId)
-      
-          if (foundMineral && foundFacilityMineral) {
-            updatedMineral.id = foundMineral.id
-            updatedMineral.quantity += foundMineral.quantity
-            foundFacilityMineral.quantity -= quantity
-            PutColonyMineral(updatedMineral).then(() => {
-              PutfacilityMineral(foundFacilityMineral).then(() => {
-                setQuantity(0)
-                GetColonyMineralsById(Colony.id).then(minerals => {
-                  setColonyMinerals(minerals)
-                })
-              })
-            })
-          } else if (foundFacilityMineral) {
-            foundFacilityMineral.quantity -= quantity
-            PostColonyMineral(updatedMineral).then(() => {
-              PutfacilityMineral(foundFacilityMineral).then(() => {
-                setQuantity(0)
-                GetColonyMineralsById(Colony.id).then(minerals => {
-                  setColonyMinerals(minerals)
-                })
-              })
-            })
-          }
-        }
+  const handlePurchase = () => {
+    if (quantity > 0) {
+      const updatedMineral = {
+        colonyId: Colony.id,
+        mineralId: mineralItem.mineralId,
+        miningFacilityId: mineralItem.miningFacilityId,
+        quantity: quantity
       }
+
+      //generate a random number between 1 and 100 that changes on each purchase button press
+      setPirateChance(Math.floor(Math.random() * 101))
+  
+      const foundMineral = ColonyMinerals.find(cm => cm.mineralId === updatedMineral.mineralId && cm.colonyId === updatedMineral.colonyId)
+      const foundFacilityMineral = FacilityMinerals.find(fm => fm.mineralId === updatedMineral.mineralId && fm.miningFacilityId === updatedMineral.miningFacilityId)
+  
+      if (foundMineral && foundFacilityMineral) {
+        updatedMineral.id = foundMineral.id
+        updatedMineral.quantity += foundMineral.quantity
+        foundFacilityMineral.quantity -= quantity
+        //50% chance that the pirates will steal the resources
+        if(pirateChance > 50){
+          console.log("You've been robbed by pirates!")
+          setQuantity(0)
+          return
+        }
+        PutColonyMineral(updatedMineral).then(() => {
+          PutfacilityMineral(foundFacilityMineral).then(() => {
+            setQuantity(0)
+            GetColonyMineralsById(Colony.id).then(minerals => {
+              setColonyMinerals(minerals)
+            })
+          })
+        })
+      } else if (foundFacilityMineral) {
+        foundFacilityMineral.quantity -= quantity
+        PostColonyMineral(updatedMineral).then(() => {
+          PutfacilityMineral(foundFacilityMineral).then(() => {
+            setQuantity(0)
+            GetColonyMineralsById(Colony.id).then(minerals => {
+              setColonyMinerals(minerals)
+            })
+          })
+        })
+      }
+    }
+  }
 
   const simulateTime = async () => {
     await fetch("http://localhost:5248/api/simulate-time", {
