@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { GetGovernors, GetFacilities, GetFacilitiesById, GetColonyMineralsById, GetFacilityMineralsById, PostColonyMineral, PutColonyMineral, PutfacilityMineral } from './service/service.jsx'
+import { GetGovernors, GetFacilities, GetFacilitiesById, GetColonyMineralsById, GetFacilityMineralsById, GetAllFacilityMineralsById, PostColonyMineral, PutColonyMineral, PutfacilityMineral } from './service/service.jsx'
 import './App.css' 
 
 export const App = () => {
@@ -46,7 +46,7 @@ export const App = () => {
       setFacility(data)
       console.log("facility", data)
       if (data?.id !== undefined) {
-        GetFacilityMineralsById(data.id).then(fm => {
+        GetAllFacilityMineralsById(data.id).then(fm => {
           setFacilityMinerals(fm)
         })
       }
@@ -96,6 +96,16 @@ export const App = () => {
           }
         }
       }
+
+  const simulateTime = async () => {
+    await fetch("http://localhost:5248/api/simulate-time", {
+      method: "POST",
+    });
+    if (facilityId !== '') {
+      const updatedMinerals = await GetAllFacilityMineralsById(facilityId);
+      setFacilityMinerals(updatedMinerals);
+    }
+  };
             
   return (
     <div>
@@ -132,9 +142,11 @@ export const App = () => {
       <h2>Facility Minerals</h2>
       {FacilityMinerals.map(fm => (
         <div key={fm.id}>
-          <button onClick={() => setMineralItem(fm)}>{fm?.minerals[0].name} {fm.quantity}</button>
+          <button onClick={() => setMineralItem(fm)}>{fm?.minerals[0].name} {fm.quantity} (+{fm.productionRate})</button>
+          
         </div>
       ))}
+      <button onClick={simulateTime}>Simulate Time</button>
 
       <h2>Shopping cart</h2>
         {mineralItem === '' ? null : (

@@ -13,6 +13,10 @@ export const GetColonyMineralsById = async(Id) => {
 export const GetFacilityMineralsById = async(id) => {
     return fetch(`http://localhost:5248/api/facilityminerals/minerals/${id}`).then(res => res.json())
 }
+export const GetAllFacilityMineralsById = async(id) => {
+    return fetch(`http://localhost:5248/api/facilityminerals/all/${id}`).then(res => res.json())
+}
+
 export const PostColonyMineral = async(cm) => {
     return fetch("http://localhost:5248/api/colonyMinerals", {
         method: "POST",
