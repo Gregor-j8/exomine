@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
-import { GetGovernors, GetFacilities, GetFacilitiesById, GetColonyMineralsById, GetFacilityMineralsById, PostColonyMineral, PutColonyMineral, PutfacilityMineral } from './service/service.jsx'
+import { useState, useEffect, use } from 'react'
+import { GetGovernors, GetFacilities, GetFacilitiesById, GetColonyMineralsById,
+   GetFacilityMineralsById, PostColonyMineral, PutColonyMineral, PutfacilityMineral, PurchaseMineral, GetColonies, GetColoniesById, GetGovernorById } from './service/service.jsx'
 import './App.css' 
 
 export const App = () => {
@@ -10,10 +11,14 @@ export const App = () => {
   const [facilityId, setfacilityId] = useState('')
   const [mineralItem, setMineralItem] = useState('')
   const [Colony, setColony] = useState({})
+  const [Colonies, setColonies] = useState({})
+  const [c, setC] = useState([])
+  const [g, setg] = useState({})
   const [ColonyMinerals, setColonyMinerals] = useState([])
   const [FacilityMinerals, setFacilityMinerals] = useState([])
   const [quantity, setQuantity] = useState(0)
   const [mineralquantity, setmineralquantity] = useState(0)
+  console.log(g)
 
   useEffect(() => {
     GetGovernors().then(data => {
@@ -26,12 +31,13 @@ export const App = () => {
       setFacilities(data)
     })
   }, []) 
-
   useEffect(() => {
     if (governorId === '') return
-    GetFacilitiesById(governorId).then(data => {
+    GetGovernorById(governorId).then(g => {
+      setg(g)
+    })
+    GetColoniesById(governorId).then(data => {
       setColony(data)
-      console.log("colony", data)
       if (data?.id !== undefined) {
         GetColonyMineralsById(data.id).then(minerals => {
           setColonyMinerals(minerals)
@@ -44,7 +50,6 @@ export const App = () => {
     if (facilityId === '') return
     GetFacilitiesById(facilityId).then(data => {
       setFacility(data)
-      console.log("facility", data)
       if (data?.id !== undefined) {
         GetFacilityMineralsById(data.id).then(fm => {
           setFacilityMinerals(fm)
@@ -60,43 +65,31 @@ export const App = () => {
   }, [mineralItem]);
   
       const handlePurchase = () => {
+        const purchaseMineral = {
+          colonyId: g?.colonyDTOs.id,
+          facilityId: facility.id,
+          mineralId: mineralItem.mineralId,
+          quantity: quantity
+        }
         if (quantity > 0) {
-          const updatedMineral = {
-            colonyId: Colony.id,
-            mineralId: mineralItem.mineralId,
-            miningFacilityId: mineralItem.miningFacilityId,
-            quantity: quantity
-          }
-      
-          const foundMineral = ColonyMinerals.find(cm => cm.mineralId === updatedMineral.mineralId && cm.colonyId === updatedMineral.colonyId)
-          const foundFacilityMineral = FacilityMinerals.find(fm => fm.mineralId === updatedMineral.mineralId && fm.miningFacilityId === updatedMineral.miningFacilityId)
-      
-          if (foundMineral && foundFacilityMineral) {
-            updatedMineral.id = foundMineral.id
-            updatedMineral.quantity += foundMineral.quantity
-            foundFacilityMineral.quantity -= quantity
-            PutColonyMineral(updatedMineral).then(() => {
-              PutfacilityMineral(foundFacilityMineral).then(() => {
-                setQuantity(0)
-                GetColonyMineralsById(Colony.id).then(minerals => {
-                  setColonyMinerals(minerals)
-                })
-              })
-            })
-          } else if (foundFacilityMineral) {
-            foundFacilityMineral.quantity -= quantity
-            PostColonyMineral(updatedMineral).then(() => {
-              PutfacilityMineral(foundFacilityMineral).then(() => {
-                setQuantity(0)
-                GetColonyMineralsById(Colony.id).then(minerals => {
-                  setColonyMinerals(minerals)
-                })
-              })
-            })
-          }
+          PurchaseMineral(purchaseMineral).then(() => {
+            GetColonyMineralsById(g?.colonyDTOs.id).then(data => {
+              setColonyMinerals([...data])
+            });
+            GetFacilityMineralsById(facility.id).then(data => {
+              setFacilityMinerals([...data])
+              GetGovernorById(governorId).then(g => {
+                setg(g);
+              });
+              setQuantity(0);
+            });
+          }).catch((error) => {
+            alert("Purchase failed. See console for details.");
+            console.error("Purchase error:", error);
+          });
         }
       }
-            
+    
   return (
     <div>
       <h1>Exomine</h1>

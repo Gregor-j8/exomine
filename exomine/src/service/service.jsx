@@ -4,8 +4,17 @@ export const GetGovernors = async() => {
 export const GetFacilities = async() => {
     return fetch("http://localhost:5248/api/facilities").then(res => res.json())
 }
+export const GetColonies = async() => {
+    return fetch("http://localhost:5248/api/colonies").then(res => res.json())
+}
+export const GetColoniesById = async(colonyId) => {
+    return fetch(`http://localhost:5248/api/colonies/${colonyId}`).then(res => res.json())
+}
 export const GetFacilitiesById = async(facilityId) => {
     return fetch(`http://localhost:5248/api/facilities/${facilityId}`).then(res => res.json())
+}
+export const GetGovernorById = async(governorId) => {
+    return fetch(`http://localhost:5248/api/governors/${governorId}`).then(res => res.json())
 }
 export const GetColonyMineralsById = async(Id) => {
     return fetch(`http://localhost:5248/api/colonyMinerals/${Id}`).then(res => res.json())
@@ -41,6 +50,17 @@ export const PutfacilityMineral = async(fm) => {
         body: JSON.stringify(fm)
     }).then(res => res.json())
 }
+export const PurchaseMineral = async (purchaseData) => {
+    return fetch(`http://localhost:5248/api/purchase`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(purchaseData)
+    }).then(res => res.json())
+}
+
+  
 
 // http://localhost:5248/api/colonyMinerals
 
