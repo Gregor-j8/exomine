@@ -22,33 +22,43 @@ export const GetColonyMineralsById = async(Id) => {
 export const GetFacilityMineralsById = async(id) => {
     return fetch(`http://localhost:5248/api/facilityminerals/minerals/${id}`).then(res => res.json())
 }
+export const GetAllFacilityMineralsById = async(id) => {
+    return fetch(`http://localhost:5248/api/facilityminerals/all/${id}`).then(res => res.json())
+}
+
 export const PostColonyMineral = async(cm) => {
-    return fetch("http://localhost:5248/api/colonyMinerals", {
+    await fetch("http://localhost:5248/api/colonyMinerals", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(cm)
     }).then(res => res.json())
+
+    return
 }
 export const PutColonyMineral = async(cm) => {
-    return fetch(`http://localhost:5248/api/colonyMinerals/${cm.id}`, {
+    const res = await fetch(`http://localhost:5248/api/colonyMinerals/${cm.id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(cm)
-    }).then(res => res.json())
+    })
+
+    return
 }
 export const PutfacilityMineral = async(fm) => {
-    return fetch(`http://localhost:5248/api/facilityMinerals/${fm.id}
+    await fetch(`http://localhost:5248/api/facilityMinerals/${fm.id}
 `, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(fm)
-    }).then(res => res.json())
+    })
+
+    return
 }
 export const PurchaseMineral = async (purchaseData) => {
     return fetch(`http://localhost:5248/api/purchase`, {
